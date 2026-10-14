@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tow math - calculators</title>
+<style>
+  :root { --accent: #4a6a8a; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: Georgia, 'Times New Roman', serif; background: #f4f6f8; color: #24282c; line-height: 1.55; }
+  main { max-width: 1100px; margin: 0 auto; padding: 40px 20px 64px; }
+  h1 { font-size: 2rem; margin: 0 0 8px; color: var(--accent); }
+  .lede { margin: 0 0 14px; max-width: 640px; }
+  .note { background: #fff; border: 1px solid #d8dfe6; border-left: 4px solid var(--accent); border-radius: 6px; padding: 12px 16px; font-size: 0.9rem; margin: 0 0 28px; max-width: 720px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 18px; }
+  section { background: #fff; border: 1px solid #d8dfe6; border-radius: 8px; padding: 20px 22px; }
+  h2 { font-size: 1.15rem; margin: 0 0 6px; }
+  .hint { font-size: 0.9rem; color: #727e88; margin: 0 0 14px; }
+  label { display: block; font-size: 0.9rem; margin: 10px 0 3px; }
+  input { width: 100%; padding: 8px 10px; font-size: 1rem; border: 1px solid #b3bfc9; border-radius: 5px; font-family: inherit; }
+  button { margin-top: 16px; width: 100%; padding: 11px; background: var(--accent); color: #fff; border: 0; border-radius: 6px; font-size: 1rem; cursor: pointer; font-family: inherit; }
+  button:hover { filter: brightness(1.08); }
+  .out { margin-top: 14px; font-size: 1rem; min-height: 1.4em; }
+  .out.err { color: #a32222; }
+  footer { max-width: 1100px; margin: 0 auto; padding: 0 20px 40px; font-size: 0.85rem; color: #98a2ab; }
+  a { color: var(--accent); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Tow math</h1>
+  <p class="lede">The ad names the trailer, the sticker names the payload, and the tongue names the margin. Exact arithmetic, every borrowed number labeled.</p>
+  <div class="note">Illustrative planning arithmetic only. Tongue percentages and brake lines are labeled norms; brake laws differ by state and your manual's limits can be stricter. The lowest rating in the chain (truck, hitch, ball, coupler) is the limit. If sway starts, slow down gently - do not brake hard.</div>
+  <div class="grid">
+    <section>
+      <h2>Tongue plan</h2>
+      <p class="hint">The tongue names the hitch load.</p>
+      <label for="t-w">Loaded trailer (lb)</label>
+      <input id="t-w" type="number" value="5000" min="0" step="100">
+      <button id="t-go">Weigh the hitch</button>
+      <div class="out" id="t-out"></div>
+    </section>
+    <section>
+      <h2>Payload plan</h2>
+      <p class="hint">The sticker names the margin.</p>
+      <label for="p-p">Payload rating (lb)</label>
+      <input id="p-p" type="number" value="1500" min="0" step="50">
+      <label for="p-h">People (lb)</label>
+      <input id="p-h" type="number" value="400" min="0" step="10">
+      <label for="p-c">Cargo (lb)</label>
+      <input id="p-c" type="number" value="200" min="0" step="10">
+      <label for="p-t">Tongue (lb)</label>
+      <input id="p-t" type="number" value="600" min="0" step="10">
+      <button id="p-go">Spend the sticker</button>
+      <div class="out" id="p-out"></div>
+    </section>
+    <section>
+      <h2>Brake plan</h2>
+      <p class="hint">The weight names the brakes.</p>
+      <label for="b-w">Loaded trailer (lb)</label>
+      <input id="b-w" type="number" value="2800" min="0" step="100">
+      <button id="b-go">Check the line</button>
+      <div class="out" id="b-out"></div>
+    </section>
+  </div>
+</main>
+<footer>Built by the app factory. <a href="index.html">About</a> &middot; <a href="https://github.com/iLanis-agent/towmath">Source</a></footer>
+<script src="engine.js"></script>
+<script>
+function num(id){ return parseFloat(document.getElementById(id).value); }
+function show(id, r, render){
+  var el = document.getElementById(id);
+  if (r.error) { el.textContent = r.error; el.classList.add('err'); }
+  else { el.textContent = render(r); el.classList.remove('err'); }
+}
+document.getElementById('t-go').addEventListener('click', function(){
+  var a=[num('t-w')];
+  show('t-out', TowMath.tonguePlan.apply(null,a), function(r){ return TowMath.renderTongue.apply(null,[r].concat(a)); });
+});
+document.getElementById('p-go').addEventListener('click', function(){
+  var a=[num('p-p'),num('p-h'),num('p-c'),num('p-t')];
+  show('p-out', TowMath.payloadPlan.apply(null,a), function(r){ return TowMath.renderPayload.apply(null,[r].concat(a)); });
+});
+document.getElementById('b-go').addEventListener('click', function(){
+  var a=[num('b-w')];
+  show('b-out', TowMath.brakePlan.apply(null,a), function(r){ return TowMath.renderBrake.apply(null,[r].concat(a)); });
+});
+</script>
+</body>
+</html>
